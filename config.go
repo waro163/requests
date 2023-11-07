@@ -37,7 +37,7 @@ type Options struct {
 type config struct {
 	Options
 	timeout   *time.Duration
-	transport *http.Transport
+	transport http.RoundTripper
 }
 
 // Option defines the function signature to set the optional configuration properties
@@ -49,7 +49,7 @@ func WithTimeout(t time.Duration) Option {
 	}
 }
 
-func WithTransport(t *http.Transport) Option {
+func WithTransport(t http.RoundTripper) Option {
 	return func(c *config) {
 		c.transport = t
 	}
