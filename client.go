@@ -21,7 +21,7 @@ func NewClient(options ...Option) *Client {
 		config.timeout = &defaultRequestTimeout
 	}
 	if config.transport == nil {
-		config.transport = defaultTransport
+		config.transport = OtelTransport
 	}
 	if config.Options.DefaultHeaders == nil {
 		config.Options.DefaultHeaders = defaultRequestHeaders
