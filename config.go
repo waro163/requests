@@ -72,3 +72,23 @@ func WithName(name string) Option {
 		c.Name = name
 	}
 }
+
+func (cli *Client) WithName(name string) {
+	cli.Options.Name = name
+}
+
+func (cli *Client) WithBaseURL(base *url.URL) {
+	cli.Options.BaseURL = base
+}
+
+func (cli *Client) WithTimeout(t time.Duration) {
+	cli.RawClient.Timeout = t
+}
+
+func (cli *Client) WithDefaultRequestHeaders(headers http.Header) {
+	cli.Options.DefaultHeaders = headers
+}
+
+func (cli *Client) WithTransport(t http.RoundTripper) {
+	cli.RawClient.Transport = t
+}
