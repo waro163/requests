@@ -52,6 +52,7 @@ func (o *Opentelemertry) ProcessResponse(c context.Context, req *http.Request, r
 		span.SetStatus(codes.Ok, resp.Status)
 		span.SetAttributes(
 			semconv.HTTPStatusCode(resp.StatusCode),
+			semconv.HTTPResponseContentLength(int(resp.ContentLength)),
 		)
 	} else {
 		span.SetStatus(codes.Unset, codes.Unset.String())
