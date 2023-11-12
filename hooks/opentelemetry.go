@@ -18,11 +18,11 @@ const (
 	goPackageName = "github.com/waro163/requests"
 )
 
-type Opentelemertry struct {
+type Opentelemetry struct {
 	Name string // this should be app name
 }
 
-func (o *Opentelemertry) PrepareRequest(c context.Context, req *http.Request) error {
+func (o *Opentelemetry) PrepareRequest(c context.Context, req *http.Request) error {
 	tracer := otel.Tracer(goPackageName)
 	ctx, _ := tracer.Start(
 		req.Context(),
@@ -41,11 +41,11 @@ func (o *Opentelemertry) PrepareRequest(c context.Context, req *http.Request) er
 	return nil
 }
 
-func (o *Opentelemertry) OnRequestError(context.Context, *http.Request, error) error {
+func (o *Opentelemetry) OnRequestError(context.Context, *http.Request, error) error {
 	return nil
 }
 
-func (o *Opentelemertry) ProcessResponse(c context.Context, req *http.Request, resp *http.Response) error {
+func (o *Opentelemetry) ProcessResponse(c context.Context, req *http.Request, resp *http.Response) error {
 	span := trace.SpanFromContext(req.Context())
 	defer span.End()
 	if resp != nil {
@@ -60,7 +60,7 @@ func (o *Opentelemertry) ProcessResponse(c context.Context, req *http.Request, r
 	return nil
 }
 
-func (o *Opentelemertry) OnResponseError(c context.Context, req *http.Request, resp *http.Response, err error) error {
+func (o *Opentelemetry) OnResponseError(c context.Context, req *http.Request, resp *http.Response, err error) error {
 	span := trace.SpanFromContext(req.Context())
 	span.RecordError(err)
 	span.SetStatus(codes.Error, codes.Error.String())
