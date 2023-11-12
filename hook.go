@@ -17,3 +17,7 @@ type Hook interface {
 	// OnRequestError is for when ProcessResponse return error, it will handle this error, if this function also return error, all the work will stop
 	OnResponseError(context.Context, *http.Request, *http.Response, error) error
 }
+
+func UseGlobalHook(hooks ...Hook) {
+	globalHooks = append(globalHooks, hooks...)
+}

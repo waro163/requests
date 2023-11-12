@@ -43,10 +43,6 @@ func (cli *Client) Use(hook Hook) {
 	cli.hooks = append(cli.hooks, hook)
 }
 
-func (cli *Client) UseGlobal(hook Hook) {
-	globalHooks = append(globalHooks, hook)
-}
-
 func (cli *Client) prepareRequest(ctx context.Context, req *http.Request) error {
 	for _, globalHook := range globalHooks {
 		if err := globalHook.PrepareRequest(ctx, req); err != nil {
