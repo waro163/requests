@@ -62,16 +62,16 @@ func (cli *Client) prepareRequest(ctx context.Context, req *http.Request) error 
 }
 
 func (cli *Client) processResponse(ctx context.Context, req *http.Request, resp *http.Response) error {
-	for _, globalHook := range globalHooks {
-		if err := globalHook.ProcessResponse(ctx, req, resp); err != nil {
-			if err := globalHook.OnResponseError(ctx, req, resp, err); err != nil {
-				return nil
+	for i := len(cli.hooks) - 1; i >= 0; i-- {
+		if err := cli.hooks[i].ProcessResponse(ctx, req, resp); err != nil {
+			if err := cli.hooks[i].OnResponseError(ctx, req, resp, err); err != nil {
+				return err
 			}
 		}
 	}
-	for _, hook := range cli.hooks {
-		if err := hook.ProcessResponse(ctx, req, resp); err != nil {
-			if err := hook.OnResponseError(ctx, req, resp, err); err != nil {
+	for i := len(globalHooks) - 1; i >= 0; i-- {
+		if err := globalHooks[i].ProcessResponse(ctx, req, resp); err != nil {
+			if err := globalHooks[i].OnResponseError(ctx, req, resp, err); err != nil {
 				return err
 			}
 		}
