@@ -79,7 +79,7 @@ func (cli *Client) processResponse(ctx context.Context, req *http.Request, resp 
 	return nil
 }
 
-func (cli *Client) doRequest(ctx context.Context, req *http.Request) (*http.Response, error) {
+func (cli *Client) DoRequest(ctx context.Context, req *http.Request) (*http.Response, error) {
 	if err := cli.prepareRequest(ctx, req); err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (cli *Client) Get(ctx context.Context, path string, opts *HTTPOptions) (*ht
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
 
 func (cli *Client) Post(ctx context.Context, path string, opts *HTTPOptions) (*http.Response, error) {
@@ -106,7 +106,7 @@ func (cli *Client) Post(ctx context.Context, path string, opts *HTTPOptions) (*h
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
 
 func (cli *Client) Put(ctx context.Context, path string, opts *HTTPOptions) (*http.Response, error) {
@@ -114,7 +114,7 @@ func (cli *Client) Put(ctx context.Context, path string, opts *HTTPOptions) (*ht
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
 
 func (cli *Client) Patch(ctx context.Context, path string, opts *HTTPOptions) (*http.Response, error) {
@@ -122,7 +122,7 @@ func (cli *Client) Patch(ctx context.Context, path string, opts *HTTPOptions) (*
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
 
 func (cli *Client) Delete(ctx context.Context, path string, opts *HTTPOptions) (*http.Response, error) {
@@ -130,7 +130,7 @@ func (cli *Client) Delete(ctx context.Context, path string, opts *HTTPOptions) (
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
 
 func (cli *Client) Head(ctx context.Context, path string, opts *HTTPOptions) (*http.Response, error) {
@@ -138,5 +138,5 @@ func (cli *Client) Head(ctx context.Context, path string, opts *HTTPOptions) (*h
 	if err != nil {
 		return nil, err
 	}
-	return cli.doRequest(ctx, req)
+	return cli.DoRequest(ctx, req)
 }
