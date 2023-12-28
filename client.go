@@ -26,9 +26,6 @@ func NewClient(options ...Option) *Client {
 	if config.Options.DefaultHeaders == nil {
 		config.Options.DefaultHeaders = defaultRequestHeaders
 	}
-	if config.Options.BaseURL == nil {
-		panic("WithBaseURL options must be config")
-	}
 
 	return &Client{
 		Options: config.Options,
