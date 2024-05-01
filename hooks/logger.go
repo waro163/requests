@@ -16,6 +16,7 @@ const (
 	strHost        = "Host"
 	strUrl         = "Url"
 	strMethod      = "Method"
+	strQuery       = "Query"
 	strHeader      = "Header"
 	strReqBody     = "ReqBody"
 	strEndTime     = "EndTime"
@@ -28,14 +29,20 @@ type Logger struct{}
 
 func (l *Logger) PrepareRequest(ctx context.Context, req *http.Request) error {
 	byteHeaders, _ := json.Marshal(req.Header)
-	reader, _ := req.GetBody()
-	reqBody, _ := io.ReadAll(reader)
-	log.Ctx(ctx).Info().
+	buffer := bytes.Buffer{}
+	if req.Body != nil && req.Body != http.NoBody && req.GetBody != nil {
+		if reader, err := req.GetBody(); err == nil {
+			buffer.ReadFrom(reader)
+		}
+	}
+	log.Info().
 		Str(strStartTime, time.Now().String()).
 		Str(strHost, req.Host).
-		Str(strUrl, req.RequestURI).
+		Str(strMethod, req.Method).
+		Str(strUrl, req.URL.Path).
+		Str(strQuery, req.URL.RawQuery).
 		RawJSON(strHeader, byteHeaders).
-		RawJSON(strReqBody, reqBody).
+		RawJSON(strReqBody, buffer.Bytes()).
 		Msg(defaultLogName)
 	return nil
 }
@@ -45,13 +52,19 @@ func (l *Logger) OnRequestError(context.Context, *http.Request, error) error {
 }
 
 func (l *Logger) ProcessResponse(ctx context.Context, req *http.Request, resp *http.Response) error {
-	byteBody, _ := io.ReadAll(resp.Body)
-	resp.Body = io.NopCloser(bytes.NewBuffer(byteBody))
-	log.Ctx(ctx).Info().
+	buffer := bytes.NewBuffer(nil)
+	if resp.Body != nil && resp.Body != http.NoBody {
+		buffer.ReadFrom(resp.Body)
+		resp.Body.Close()
+		resp.Body = io.NopCloser(buffer)
+	}
+	log.Info().
 		Str(strEndTime, time.Now().String()).
 		Str(strHost, req.Host).
-		Str(strUrl, req.RequestURI).
-		RawJSON(strRespBody, byteBody).
+		Str(strMethod, req.Method).
+		Str(strUrl, req.URL.Path).
+		Str(strQuery, req.URL.RawQuery).
+		RawJSON(strRespBody, buffer.Bytes()).
 		Int(strStatusCode, resp.StatusCode).
 		Msg(defaultLogName)
 	return nil
