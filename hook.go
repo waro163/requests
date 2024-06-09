@@ -5,7 +5,11 @@ import (
 	"net/http"
 )
 
-var globalHooks []Hook
+var (
+	globalHooks []Hook
+	// lastGlobalHooks will be done after normal hook
+	lastGlobalHooks []Hook
+)
 
 type Hook interface {
 	// PrepareRequest handle this request before do requesting
@@ -20,4 +24,8 @@ type Hook interface {
 
 func UseGlobalHook(hooks ...Hook) {
 	globalHooks = append(globalHooks, hooks...)
+}
+
+func UseLastGlobalHook(hooks ...Hook) {
+	lastGlobalHooks = append(lastGlobalHooks, hooks...)
 }

@@ -55,10 +55,24 @@ func (cli *Client) prepareRequest(ctx context.Context, req *http.Request) error 
 			}
 		}
 	}
+	for _, globalHook := range lastGlobalHooks {
+		if err := globalHook.PrepareRequest(ctx, req); err != nil {
+			if err := globalHook.OnRequestError(ctx, req, err); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
 func (cli *Client) processResponse(ctx context.Context, req *http.Request, resp *http.Response) error {
+	for i := len(lastGlobalHooks) - 1; i >= 0; i-- {
+		if err := lastGlobalHooks[i].ProcessResponse(ctx, req, resp); err != nil {
+			if err := lastGlobalHooks[i].OnResponseError(ctx, req, resp, err); err != nil {
+				return err
+			}
+		}
+	}
 	for i := len(cli.hooks) - 1; i >= 0; i-- {
 		if err := cli.hooks[i].ProcessResponse(ctx, req, resp); err != nil {
 			if err := cli.hooks[i].OnResponseError(ctx, req, resp, err); err != nil {
