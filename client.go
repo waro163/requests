@@ -90,6 +90,10 @@ func (cli *Client) processResponse(ctx context.Context, req *http.Request, resp 
 	return nil
 }
 
+func (cli *Client) Do(req *http.Request) (resp *http.Response, err error) {
+	return cli.DoRequest(req.Context(), req)
+}
+
 func (cli *Client) DoRequest(ctx context.Context, req *http.Request) (*http.Response, error) {
 	if err := cli.prepareRequest(ctx, req); err != nil {
 		return nil, err
